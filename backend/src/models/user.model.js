@@ -34,7 +34,7 @@ const userSchema = new Schema({
     },
     
     coverImage: {
-        type: String, // Cloudinary URL
+        type: String,
     },
 
     password: {
