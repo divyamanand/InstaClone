@@ -53,8 +53,4 @@ router.route("/unpin/:mediaId").patch(
     unPinAPost
 )
 
-router.route("/comments/:mediaId").get(
-    getPostComments
-)
-
 export default router

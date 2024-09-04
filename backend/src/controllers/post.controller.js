@@ -245,25 +245,6 @@ const unPinAPost = asyncHandler(async (req, res) => {
     )
 })
 
-const getPostComments = asyncHandler(async (req, res) => {
-
-    const {mediaId} = req.params
-
-    const post = await Media.findById(mediaId)
-                .populate("comments")
-                .exec()
-
-    if (!post) {
-        throw new ApiError(400, "Unable to Find The Post")
-    }
-
-    return res
-    .status(200)
-    .json(
-        new ApiResponse(200, post.comments, "Post Comments Fetched Successfully")
-    )
-})
-
 const getAllPostsofUser = asyncHandler(async (req, res) => {
 
     const user = await User.findById(req.user._id).populate("allPosts").exec()
@@ -287,6 +268,5 @@ export {
     unArchivePost,
     pinAPost,
     unPinAPost,
-    getPostComments,
     getAllPostsofUser
 }
