@@ -34,6 +34,7 @@ const publishPost  = asyncHandler(async (req, res) => {
         owner: postOwner._id
     })
 
+
     if (!post) {
         throw new ApiError(400, "Something Went Wrong While Creating Your Post")
     }

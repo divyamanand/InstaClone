@@ -1,19 +1,24 @@
 import { Router } from "express";
-import { verifyJWT } from "../middlewares/auth.middleware";
-import { addAComment, getPostComments, getRepliesOfComment } from "../controllers/comment.controller";
+import { verifyJWT } from "../middlewares/auth.middleware.js";
+import { addAComment, addAReply, getPostComments, getRepliesOfComment } from "../controllers/comment.controller.js";
 
 const router = Router()
 
-router.route("/addComment").post(
+router.route("/:mediaId/addComment").post(
     verifyJWT,
     addAComment
 )
 
-router.route("/comment/:mediaId").get(
+router.route("/:commentId/addReply").post(
+    verifyJWT,
+    addAReply
+)
+
+router.route("/:mediaId").get(
     getPostComments
 )
 
-router.route("/comment/:commentId").get(
+router.route("/replies/:commentId").get(
     getRepliesOfComment
 )
 
