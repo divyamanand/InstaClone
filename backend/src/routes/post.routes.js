@@ -5,7 +5,6 @@ import {
     deletePost, 
     editPost, 
     getAllPostsofUser, 
-    getPostComments, 
     pinAPost, 
     publishPost, 
     unArchivePost,
