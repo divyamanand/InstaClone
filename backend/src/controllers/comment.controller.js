@@ -90,36 +90,6 @@ const getPostComments = asyncHandler(async (req, res) => {
     )
 })
 
-// const likeAComment = asyncHandler(async (req, res) => {
-
-//     const {commentId} = req.params
-//     const comment = await Comment.findById(commentId)
-    
-//     if (!comment) {
-//         throw new ApiError(400, "Comment Not Found")
-//     }
-
-//     const currentUser = await User.findById(req.user?._id)
-
-//     if (!currentUser) {
-//         throw new ApiError(400, "Login to like a comment")
-//     }
-
-//     const like = await Like.create({
-//         comment: commentId,
-//         likedBy: currentUser
-//     })
-
-//     if (!like) {
-//         throw new ApiError(400, "Can't like the Comment! Try again later")
-//     }
-
-//     return res
-//     .status(200)
-//     .json(
-//         new ApiResponse(200, like, "You liked the Comment!")
-//     )
-// })
 
 const getRepliesOfComment = asyncHandler(async (req, res) => {
     const { commentId } = req.params;
