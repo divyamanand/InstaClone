@@ -1,9 +1,9 @@
 import { Comment } from "../models/comment.model";
-import { Like } from "../models/like.model";
 import { User } from "../models/user.model";
 import { ApiError } from "../utils/ApiError";
 import { ApiResponse } from "../utils/ApiResponse";
 import { asyncHandler } from "../utils/asyncHandler";
+import { Media } from "../models/media.model"
 
 
 const addAComment = asyncHandler(async (req, res) => {
@@ -35,38 +35,57 @@ const addAComment = asyncHandler(async (req, res) => {
     )
 })
 
-const likeAComment = asyncHandler(async (req, res) => {
+const getPostComments = asyncHandler(async (req, res) => {
 
-    const {commentId} = req.params
-    const comment = await Comment.findById(commentId)
-    
-    if (!comment) {
-        throw new ApiError(400, "Comment Not Found")
-    }
+    const {mediaId} = req.params
 
-    const currentUser = await User.findById(req.user?._id)
+    const post = await Media.findById(mediaId)
+                .populate("comments")
+                .exec()
 
-    if (!currentUser) {
-        throw new ApiError(400, "Login to like a comment")
-    }
-
-    const like = await Like.create({
-        comment: commentId,
-        likedBy: currentUser
-    })
-
-    if (!like) {
-        throw new ApiError(400, "Can't like the Comment! Try again later")
+    if (!post) {
+        throw new ApiError(400, "Unable to Find The Post")
     }
 
     return res
     .status(200)
     .json(
-        new ApiResponse(200, like, "You liked the Comment!")
+        new ApiResponse(200, post.comments, "Post Comments Fetched Successfully")
     )
 })
 
-const getCommentWithRepliesById = asyncHandler(async (req, res) => {
+// const likeAComment = asyncHandler(async (req, res) => {
+
+//     const {commentId} = req.params
+//     const comment = await Comment.findById(commentId)
+    
+//     if (!comment) {
+//         throw new ApiError(400, "Comment Not Found")
+//     }
+
+//     const currentUser = await User.findById(req.user?._id)
+
+//     if (!currentUser) {
+//         throw new ApiError(400, "Login to like a comment")
+//     }
+
+//     const like = await Like.create({
+//         comment: commentId,
+//         likedBy: currentUser
+//     })
+
+//     if (!like) {
+//         throw new ApiError(400, "Can't like the Comment! Try again later")
+//     }
+
+//     return res
+//     .status(200)
+//     .json(
+//         new ApiResponse(200, like, "You liked the Comment!")
+//     )
+// })
+
+const getRepliesOfComment = asyncHandler(async (req, res) => {
     const {commentId} = req.params
 
     const comment = await Comment.findById(commentId)
@@ -80,13 +99,13 @@ const getCommentWithRepliesById = asyncHandler(async (req, res) => {
     return res
     .status(200)
     .json(
-        new ApiError(200, comment, "Comments & Replies fetched successfully")
+        new ApiError(200, comment.replies, "Replies fetched successfully")
     )
 })
 
 export {
     addAComment,
-    likeAComment,
-    getCommentWithRepliesById
+    getRepliesOfComment,
+    getPostComments
 }
 
