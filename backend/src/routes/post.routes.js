@@ -5,7 +5,6 @@ import {
     deletePost, 
     editPost, 
     getAllPostsofUser, 
-    getPostComments, 
     pinAPost, 
     publishPost, 
     unArchivePost,
@@ -51,10 +50,6 @@ router.route("/pin/:mediaId").patch(
 router.route("/unpin/:mediaId").patch(
     verifyJWT,
     unPinAPost
-)
-
-router.route("/comments/:mediaId").get(
-    getPostComments
 )
 
 export default router
