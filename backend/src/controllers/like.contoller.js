@@ -4,81 +4,131 @@ import { ApiError } from "../utils/ApiError"
 import { ApiResponse } from "../utils/ApiResponse"
 import { asyncHandler } from "../utils/asyncHandler"
 
-const addLike = asyncHandler(async (req, res) => {
-
-    const {mediaId} = req.params
-    const media = await Media.findById(mediaId)
+const likeMedia = asyncHandler(async (req, res) => {
+    const { mediaId } = req.params;
+    const media = await Media.findById(mediaId);
     
     if (!media) {
-        throw new ApiError(400, "media Not Found")
+        throw new ApiError(400, "Media not found");
     }
 
-    const currentUser = await User.findById(req.user?._id)
+    const currentUser = req.user;
 
     if (!currentUser) {
-        throw new ApiError(400, "Login to like a media")
+        throw new ApiError(400, "Login to like media");
     }
 
     const like = await Like.create({
         media: mediaId,
-        likedBy: currentUser
-    })
+        likedBy: currentUser._id,
+    });
 
     if (!like) {
-        throw new ApiError(400, "Can't like the media! Try again later")
+        throw new ApiError(400, "Can't like the media! Try again later");
     }
 
-    return res
-    .status(200)
-    .json(
+    return res.status(200).json(
         new ApiResponse(200, like, "You liked the media!")
-    )
-})
+    );
+});
 
-const getLikesCount = asyncHandler(async (req, res) => {
-    const {mediaId} = req.params
-
-    const media = await Media.findById(mediaId)
-
-    if (!media) {
-        throw new ApiError(400, "media does not exist")
-    }
-
-    const totalLikes = await media.countLikes()
-
-    return res
-    .status(200)
-    .json(
-        new ApiResponse(200, totalLikes, "Likes Counted")
-    )
-})
-
-const getAllLikedUsers = asyncHandler(async (req, res) => {
-    const {mediaId} = req.params
-
-    const media = await Media.findById(mediaId)
-                    .populate("likes")
-                    .exec()
+const getMediaLikesCount = asyncHandler(async (req, res) => {
+    const { mediaId } = req.params;
+    const media = await Media.findById(mediaId);
 
     if (!media) {
-        throw new ApiError(400, "media does not exist")
+        throw new ApiError(400, "Media does not exist");
     }
 
-    const likedByUsers = media.likes.map(like => likedBy)
+    const totalLikes = await Like.countDocuments({ media: mediaId });
 
-    if (!likedByUsers) {
-        throw new ApiError(400, "Error fetchihg likes! Try again later")
+    return res.status(200).json(
+        new ApiResponse(200, totalLikes, "Likes counted successfully")
+    );
+});
+
+const getMediaLikedUsers = asyncHandler(async (req, res) => {
+    const { mediaId } = req.params;
+    const media = await Media.findById(mediaId)
+        .populate({ path: "likes", populate: { path: "likedBy" } })
+        .exec();
+
+    if (!media) {
+        throw new ApiError(400, "Media does not exist");
     }
 
-    return res
-    .status(200)
-    .json(
-        new ApiResponse(200, likedByUsers, "Users liked the post fetched succesfully!")
-    )
-})
+    const likedByUsers = media.likes.map(like => like.likedBy);
+
+    return res.status(200).json(
+        new ApiResponse(200, likedByUsers, "Users who liked the media fetched successfully!")
+    );
+});
+
+const likeComment = asyncHandler(async (req, res) => {
+    const { commentId } = req.params;
+    const comment = await Comment.findById(commentId);
+    
+    if (!comment) {
+        throw new ApiError(400, "Comment not found");
+    }
+
+    const currentUser = req.user;
+
+    if (!currentUser) {
+        throw new ApiError(400, "Login to like comment");
+    }
+
+    const like = await Like.create({
+        comment: commentId,
+        likedBy: currentUser._id,
+    });
+
+    if (!like) {
+        throw new ApiError(400, "Can't like the comment! Try again later");
+    }
+
+    return res.status(200).json(
+        new ApiResponse(200, like, "You liked the comment!")
+    );
+});
+
+const getCommentLikesCount = asyncHandler(async (req, res) => {
+    const { commentId } = req.params;
+    const comment = await Comment.findById(commentId);
+
+    if (!comment) {
+        throw new ApiError(400, "Comment does not exist");
+    }
+
+    const totalLikes = await Like.countDocuments({ comment: commentId });
+
+    return res.status(200).json(
+        new ApiResponse(200, totalLikes, "Likes counted successfully")
+    );
+});
+
+const getCommentLikedUsers = asyncHandler(async (req, res) => {
+    const { commentId } = req.params;
+    const comment = await Comment.findById(commentId)
+        .populate({ path: "likes", populate: { path: "likedBy" } })
+        .exec();
+
+    if (!comment) {
+        throw new ApiError(400, "Comment does not exist");
+    }
+
+    const likedByUsers = comment.likes.map(like => like.likedBy);
+
+    return res.status(200).json(
+        new ApiResponse(200, likedByUsers, "Users who liked the comment fetched successfully!")
+    );
+});
 
 export {
-    addLike,
-    getAllLikedUsers,
-    getLikesCount
+    likeMedia,
+    getMediaLikesCount,
+    getMediaLikedUsers,
+    likeComment,
+    getCommentLikesCount,
+    getCommentLikedUsers
 }
