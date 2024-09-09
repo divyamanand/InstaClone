@@ -3,7 +3,7 @@ import { CircleUserRound, CircleUserRoundIcon, User2Icon, UserIcon } from 'lucid
 import React from 'react'
 import { Link } from 'react-router-dom'
 
-function Suggestion() {
+function Suggestion({username, followers}) {
   return (
     <>
     <div className='inline-flex'>

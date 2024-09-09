@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button'
 import { CircleUserRound, CircleUserRoundIcon, User2Icon, UserIcon } from 'lucide-react'
 import { Link } from 'react-router-dom'
 
-function Profile() {
+function Profile({username, fullName}) {
   return (
     <>
     <div className='inline-flex'>
