@@ -1,7 +1,16 @@
+import MessengerIcon from '@/components/MessengerIcon'
 import { ModeToggle } from '@/components/mode-toggle'
+import NotificationIcon from '@/components/NotificationIcon'
 import { NavigationMenuContent, NavigationMenuItem, NavigationMenuLink, NavigationMenuList } from '@/components/ui/navigation-menu'
 import { NavigationMenu } from '@/components/ui/navigation-menu'
-import { BellIcon, CircleUserRoundIcon, CompassIcon, FilmIcon, HeartIcon, Home, HomeIcon, MessageCircleMoreIcon, Search, SearchIcon, SquarePlusIcon } from 'lucide-react'
+import { CircleUserRoundIcon, 
+    CompassIcon, 
+    FilmIcon, 
+    HeartIcon,
+    HomeIcon, 
+    MessageCircleMoreIcon,
+    SearchIcon, 
+    SquarePlusIcon } from 'lucide-react'
 import React, { useState } from 'react'
 import { Link, NavLink } from 'react-router-dom'
 
@@ -12,8 +21,8 @@ function Navbar() {
         {icon: <SearchIcon />, title: "Search", path: "#"},
         {icon: <CompassIcon />, title: "Explore", path: "/"},
         {icon: <FilmIcon/>, title: "Reels", path: "/"},
-        {icon: <MessageCircleMoreIcon/>, title: "Messages", path: "/"},
-        {icon: <HeartIcon/>, title: "Notification", path: "/"},
+        {icon: <MessengerIcon number='9'/>, title: "Messages", path: "/"},
+        {icon: <NotificationIcon notification={true}/>, title: "Notification", path: "/"},
         {icon: <SquarePlusIcon/>, title: "Create", path: "#"},
         {icon: <CircleUserRoundIcon/>, title: "Profile", path: "/"},
     ])
