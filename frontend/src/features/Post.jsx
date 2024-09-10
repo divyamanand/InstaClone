@@ -20,6 +20,15 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
+import Emojis from '@/components/Emojis'
+
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
+import EmojiPicker from 'emoji-picker-react'
+import { useTheme } from '@/components/theme-provider'
 
 
 function Post({
@@ -45,12 +54,14 @@ function Post({
     {button: "Cancel", link: "/"}
   ])
 
+  const {theme} = useTheme()
+
   return (
-    <Card className="w-fit">
+    <Card className="w-fit border-y">
         <CardHeader>
             <div className='flex'>
                 <Profile username={"anandivyam"}/>
-                <div className='flex text-muted-foreground items-start'>
+                <div className='flex text-muted-foreground items-center'>
                 <DotIcon/>
                 <h6 >1h</h6>
                 </div>
@@ -80,7 +91,7 @@ function Post({
         {Array.from({ length: 5 }).map((_, index) => (
           <CarouselItem key={index} onClick={() => null}>
             <div className="p-1">
-              <Card>
+              <Card className="border">
                 <CardContent className="flex aspect-square items-center justify-center p-6">
                   <span className="text-4xl font-semibold">{index + 1}</span>
                 </CardContent>
@@ -133,7 +144,14 @@ function Post({
               className='bg-background outline-none w-full text-xs'
               placeholder='Add a comment...'
             />
-            <button><SmileIcon size={14}/></button>
+            <Popover>
+              <PopoverTrigger asChild>
+                <button><SmileIcon size={14}/></button>
+              </PopoverTrigger>
+              <PopoverContent>
+                <EmojiPicker theme={theme}/>
+              </PopoverContent>
+            </Popover>  
           </div>
         </div>
       </CardFooter>
