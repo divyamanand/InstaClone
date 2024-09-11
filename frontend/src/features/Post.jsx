@@ -29,6 +29,7 @@ import {
 } from "@/components/ui/popover"
 import EmojiPicker from 'emoji-picker-react'
 import { useTheme } from '@/components/theme-provider'
+import { min } from 'date-fns'
 
 
 function Post({
@@ -53,6 +54,8 @@ function Post({
     {button: "About this account", link: "/"},
     {button: "Cancel", link: "/"}
   ])
+  const [comment, setComment] = useState("")
+  const [liked, setliked] = useState(false)
 
   const {theme} = useTheme()
 
@@ -89,7 +92,8 @@ function Post({
         <Carousel className="w-full max-w-xs">
       <CarouselContent>
         {Array.from({ length: 5 }).map((_, index) => (
-          <CarouselItem key={index} onClick={() => null}>
+          <CarouselItem key={index} onClick={() => null}
+          onDoubleClick={() => setliked(true)}>
             <div className="p-1">
               <Card className="border">
                 <CardContent className="flex aspect-square items-center justify-center p-6">
@@ -98,7 +102,7 @@ function Post({
               </Card>
             </div>
           </CarouselItem>
-        ))}
+        ))} 
       </CarouselContent>
       <CarouselPrevious />
       <CarouselNext />
@@ -108,13 +112,19 @@ function Post({
         <div className='flex flex-col space-y-2'>
           <div className='flex justify-between'>
             <div className='flex space-x-2'>
-              <button><HeartIcon/></button>
-              <button><MessageCircleIcon className='transform rotate-[270deg]' /></button>
-              <button><SendIcon/></button>
+            <button onClick={() => setliked(!liked)}>
+              <HeartIcon
+                color={liked ? "red" : "currentColor"}
+                fill={liked ? "red" : null}
+                className={`${liked ? "animate-pop" : "hover:stroke-muted-foreground"} transition-transform`}
+              />
+            </button>
+              <button><MessageCircleIcon className='transform rotate-[270deg] hover:stroke-muted-foreground' /></button>
+              <button><SendIcon className="hover:stroke-muted-foreground"/></button>
             </div>
-            <div>
-              <BookmarkIcon />
-            </div>
+            <button>
+              <BookmarkIcon className="hover:stroke-muted-foreground"/>
+            </button>
           </div>
           <div>
             <LikesPreview />
@@ -138,18 +148,32 @@ function Post({
           </p>
           </div>
           <button className='text-gray-400 text-xs flex justify-start w-fit' >View all 500 comments</button>
-          <div className='flex text-muted-foreground text-xs'>
-            <input
-              type='text'
-              className='bg-background outline-none w-full text-xs'
-              placeholder='Add a comment...'
-            />
+          <div className='flex text-muted-foreground text-xs gap-2'>
+          <textarea
+          type='text'
+          className='bg-background outline-none w-full text-xs resize-none overflow-hidden'
+          placeholder='Add a comment...'
+          value={comment}
+          onChange={(e) => {
+            setComment(e.target.value);
+            e.target.style.height = 'auto'; // Reset the height
+            e.target.style.height = `${e.target.scrollHeight}px`; // Adjust based on content
+          }}
+          rows={1}
+          />
+          {comment && <button className='font-bold text-blue-500 hover:text-current'>Post</button>}
             <Popover>
               <PopoverTrigger asChild>
                 <button><SmileIcon size={14}/></button>
               </PopoverTrigger>
               <PopoverContent>
-                <EmojiPicker theme={theme}/>
+                <EmojiPicker
+                width="minimum"
+                height="25em"
+                theme={theme} 
+                onEmojiClick={(emojidata, event) => setComment(comment+emojidata.emoji)}
+                skinTonesDisabled
+                searchDisabled/>
               </PopoverContent>
             </Popover>  
           </div>
